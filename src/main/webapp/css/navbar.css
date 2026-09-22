@@ -1,0 +1,156 @@
+:root {
+	--primary-container: #1e3a8a;
+	--primary: #00236f;
+	--on-primary: #ffffff;
+	--secondary: #006398;
+	--secondary-container: #5bb8fe;
+	--background: #faf8ff;
+	--surface-container-lowest: #ffffff;
+	--surface-container-low: #f2f3ff;
+	--surface-container: #eaedff;
+	--surface-container-high: #e2e7ff;
+	--on-surface: #131b2e;
+	--on-surface-variant: #444651;
+	--outline: #757682;
+	--outline-variant: #c5c5d3;
+	--error: #ba1a1a;
+	--error-container: #ffdad6;
+	--inverse-surface: #283044;
+	--inverse-on-surface: #eef0ff;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	background: var(--background);
+}
+
+body {
+	font-family: 'Inter', system-ui, -apple-system, sans-serif;
+	color: var(--on-surface);
+	font-size: 14px;
+	padding-top: 64px; /* header height */
+}
+
+.material-symbols-outlined {
+	font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+	vertical-align: middle;
+}
+
+.fs-16 {
+	font-size: 16px !important;
+}
+
+.fs-18 {
+	font-size: 18px !important;
+}
+
+.fs-20 {
+	font-size: 20px !important;
+}
+
+.fs-22 {
+	font-size: 22px !important;
+}
+
+a {
+	text-decoration: none;
+}
+
+/* ===== Top Header ===== */
+.app-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 64px;
+	background: var(--surface-container-lowest);
+	border-bottom: 1px solid var(--outline-variant);
+	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+	z-index: 1030;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 1.5rem;
+}
+
+.app-header .brand-logo {
+	height: 32px;
+}
+
+.divider-v {
+	width: 1px;
+	height: 20px;
+	background: var(--outline-variant);
+}
+
+.divider-v-lg {
+	width: 1px;
+	height: 24px;
+	background: var(--outline-variant);
+}
+
+.role-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 2px 10px;
+	border-radius: 999px;
+	background: var(--surface-container-high);
+	color: var(--on-surface-variant);
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+	border: 1px solid var(--outline-variant);
+}
+
+.dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+.dot-secondary {
+	background: var(--secondary);
+}
+
+.icon-btn {
+	padding: 6px;
+	border: none;
+	background: none;
+	color: var(--on-surface-variant);
+	border-radius: 8px;
+	position: relative;
+	transition: .15s;
+}
+
+.icon-btn:hover {
+	background: var(--surface-container-low);
+	color: var(--on-surface);
+}
+
+.icon-btn.danger:hover {
+	background: var(--error-container);
+	color: var(--error);
+}
+
+.notif-dot {
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--error);
+	box-shadow: 0 0 0 2px var(--surface-container-lowest);
+}
+
+.avatar-sm {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 1px solid var(--outline-variant);
+}

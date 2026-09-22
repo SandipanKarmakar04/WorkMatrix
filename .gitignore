@@ -1,0 +1,29 @@
+# Eclipse
+.settings/
+.classpath
+.project
+
+# Build / compiled files
+build/
+target/
+bin/
+*.class
+
+# Tomcat
+work/
+temp/
+logs/
+
+# IDE
+.vscode/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local environment / secrets
+.env
+*.properties.local
