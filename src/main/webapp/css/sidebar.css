@@ -1,72 +1,78 @@
 @charset "UTF-8";
 
 .app-sidebar {
-    position: fixed;
-    top: 64px;
-    bottom: 0;
-    left: 0;
-    width: 256px;
-    background: var(--surface-container-lowest);
-    border-right: 1px solid var(--outline-variant);
-    overflow-y: auto;
-    z-index: 1020;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+	position: fixed;
+	top: 64px;
+	bottom: 0;
+	left: 0;
+	width: 256px;
+	background: var(--surface-container-lowest);
+	border-right: 1px solid var(--outline-variant);
+	overflow-y: auto;
+	z-index: 1020;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
 
 .sidebar-section-title {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    color: var(--on-surface-variant);
-    padding: 0 1rem;
-    margin-bottom: 8px;
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--on-surface-variant);
+	padding: 0 1rem;
+	margin-bottom: 8px;
 }
 
 .sidebar-nav {
-    padding: 0 0.5rem;
-    margin-bottom: 1.5rem;
+	padding: 0 0.5rem;
+	margin-bottom: 1.5rem;
 }
 
 .sidebar-nav .nav-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    color: var(--on-surface-variant);
-    font-size: 14px;
-    transition: .15s;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 8px 12px;
+	border-radius: 8px;
+	color: var(--on-surface-variant);
+	font-size: 14px;
+	transition: 0.15s;
+	text-decoration: none;
 }
 
 .sidebar-nav .nav-link:hover {
-    background: var(--surface-container-high);
-    color: var(--on-surface);
+	background: var(--surface-container-high);
+	color: var(--on-surface);
 }
 
+/* ACTIVE MENU ITEM */
 .sidebar-nav .nav-link.active {
-    background: var(--primary-container);
-    color: var(--on-primary);
-    font-weight: 600;
+	background-color: #e8f0fe;
+	color: #1a73e8;
+	font-weight: 600;
+}
+
+.sidebar-nav .nav-link.active .material-symbols-outlined {
+	color: #1a73e8;
 }
 
 .sidebar-footer {
-    padding: 1rem;
-    border-top: 1px solid var(--outline-variant);
-    background: var(--surface-container-low);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--on-surface-variant);
-    font-size: 11px;
+	padding: 1rem;
+	border-top: 1px solid var(--outline-variant);
+	background: var(--surface-container-low);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	color: var(--on-surface-variant);
+	font-size: 11px;
 }
 
 .sync-ok {
-    color: var(--secondary);
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
+	color: var(--secondary);
+	font-weight: 600;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
 }

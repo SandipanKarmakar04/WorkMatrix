@@ -16,59 +16,82 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    private static final long serialVersionUID = 1L;
 
-		String employeeId = request.getParameter("employeeId");
-		String password = request.getParameter("password");
+    // Open login page
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-		String sql = "SELECT first_name, last_name, designation, employee_id " + "FROM employees "
-				+ "WHERE employee_id = ? AND password = ?";
+        response.sendRedirect(request.getContextPath() + "/login.jsp");
+    }
 
-		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+    // Process login form
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-			ps.setString(1, employeeId);
-			ps.setString(2, password);
+        String employeeId = request.getParameter("employeeId");
+        String password = request.getParameter("password");
 
-			ResultSet rs = ps.executeQuery();
+        String sql = "SELECT first_name, last_name, designation, employee_id "
+                   + "FROM employees "
+                   + "WHERE employee_id = ? AND password = ?";
 
-			if (rs.next()) {
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-				// Create session
-				HttpSession session = request.getSession();
+            ps.setString(1, employeeId);
+            ps.setString(2, password);
 
-				// Prevent session fixation
-				request.changeSessionId();
+            ResultSet rs = ps.executeQuery();
 
-				// Store authenticated employee information
-				session.setAttribute("employeeId", rs.getString("employee_id"));
+            if (rs.next()) {
 
-				session.setAttribute("firstName", rs.getString("first_name"));
+                // Create session
+                HttpSession session = request.getSession();
 
-				session.setAttribute("lastName", rs.getString("last_name"));
+                // Prevent session fixation
+                request.changeSessionId();
 
-				session.setAttribute("employeeName", rs.getString("first_name") + " " + rs.getString("last_name"));
+                // Store authenticated employee information
+                session.setAttribute("employeeId",
+                        rs.getString("employee_id"));
 
-				session.setAttribute("designation", rs.getString("designation"));
+                session.setAttribute("firstName",
+                        rs.getString("first_name"));
 
-				// Go through DashboardServlet
-				response.sendRedirect(request.getContextPath() + "/dashboard");
+                session.setAttribute("lastName",
+                        rs.getString("last_name"));
 
-			} else {
+                session.setAttribute("employeeName",
+                        rs.getString("first_name") + " "
+                        + rs.getString("last_name"));
 
-				request.setAttribute("error", "Invalid Employee ID or Password.");
+                session.setAttribute("designation",
+                        rs.getString("designation"));
 
-				request.getRequestDispatcher("/login.jsp").forward(request, response);
-			}
+                // Go to DashboardServlet
+                response.sendRedirect(request.getContextPath() + "/dashboard");
 
-		} catch (Exception e) {
+            } else {
 
-			e.printStackTrace();
+                request.setAttribute("error",
+                        "Invalid Employee ID or Password.");
 
-			request.setAttribute("error", "Unable to process login.");
+                request.getRequestDispatcher("/login.jsp")
+                       .forward(request, response);
+            }
 
-			request.getRequestDispatcher("/login.jsp").forward(request, response);
-		}
-	}
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            request.setAttribute("error",
+                    "Unable to process login.");
+
+            request.getRequestDispatcher("/login.jsp")
+                   .forward(request, response);
+        }
+    }
 }

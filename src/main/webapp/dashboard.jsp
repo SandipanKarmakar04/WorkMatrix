@@ -5,15 +5,24 @@
 <%@ page import="java.math.BigDecimal"%>
 
 <%
-if (session.getAttribute("employeeId") == null) {
-	response.sendRedirect(request.getContextPath() + "/login");
-	return;
+HttpSession currentSession = request.getSession(false);
+
+if (currentSession == null ||
+    currentSession.getAttribute("employeeId") == null) {
+
+    response.sendRedirect(request.getContextPath() + "/login");
+    return;
 }
 
 Time checkIn = (Time) request.getAttribute("checkIn");
 Time checkOut = (Time) request.getAttribute("checkOut");
 BigDecimal totalHours = (BigDecimal) request.getAttribute("totalHours");
 %>
+
+<%
+java.sql.Timestamp workUpdatedAt = (java.sql.Timestamp) request.getAttribute("workUpdatedAt");
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -72,14 +81,7 @@ BigDecimal totalHours = (BigDecimal) request.getAttribute("totalHours");
 				</div>
 
 
-				<button id="leaveRequest"
-					class="btn btn-primary-custom d-inline-flex align-items-center gap-2"
-					type="button" onclick="openLeaveModal()">
 
-					<span class="material-symbols-outlined fs-14">event_busy</span>
-					Leave Request
-
-				</button>
 
 			</div>
 		</div>
@@ -208,17 +210,22 @@ BigDecimal totalHours = (BigDecimal) request.getAttribute("totalHours");
 						<div class="d-flex flex-column flex-sm-row gap-3">
 							<button
 								class="btn btn-checkin flex-grow-1 d-inline-flex align-items-center justify-content-center gap-2"
-								id="checkin-btn" type="button" onclick="handleCheckIn()">
+								id="checkin-btn" type="button" onclick="handleCheckIn()"
+								<%=checkIn != null ? "disabled" : ""%>>
 
-								<span class="material-symbols-outlined fs-20"> login </span> <span
-									id="checkin-text">Punch Check In</span>
-
+								<span class="material-symbols-outlined fs-20">login</span> <span
+									id="checkin-text"> <%=checkIn != null ? "Checked In" : "Punch Check In"%>
+								</span>
 							</button>
 							<button
 								class="btn btn-checkout flex-grow-1 d-inline-flex align-items-center justify-content-center gap-2"
-								id="checkout-btn" type="button" onclick="handleCheckOut()">
-								<span class="material-symbols-outlined fs-20">logout</span> <span>Punch
-									Check Out</span>
+								id="checkout-btn" type="button" onclick="handleCheckOut()"
+								<%=checkOut != null ? "disabled" : ""%>>
+
+								<span class="material-symbols-outlined fs-20">logout</span> <span>
+									<%=checkOut != null ? "Checked Out" : "Punch Check Out"%>
+								</span>
+
 							</button>
 						</div>
 						<div
@@ -282,52 +289,99 @@ BigDecimal totalHours = (BigDecimal) request.getAttribute("totalHours");
 
 				<!-- Today's Work Summary -->
 				<div class="card-surface p-4">
+
+					<!-- Header -->
 					<div
 						class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 pb-3 mb-3"
 						style="border-bottom: 1px solid var(--surface-container);">
+
 						<div class="d-flex align-items-center gap-2">
+
 							<span class="material-symbols-outlined fs-22"
-								style="color: var(--primary);">description</span>
-							<h2 class="h6 mb-0">Today's Work Summary &amp; Activity Log</h2>
+								style="color: var(--primary);"> event_busy </span>
+
+							<h2 class="h6 mb-0">Leave Request</h2>
+
 						</div>
-						<span class="d-flex align-items-center gap-1" id="save-status-tag"
+
+						<span class="d-flex align-items-center gap-1"
+							id="leave-status-tag"
 							style="color: var(--on-surface-variant); font-size: 12px;">
+
 							<span class="material-symbols-outlined"
-							style="font-size: 16px; color: #059669;">cloud_done</span> Last
-							saved today at 05:45 PM
+							style="font-size: 16px; color: #059669;"> info </span> Submit a
+							leave request
+
 						</span>
+
 					</div>
+
+
+					<!-- Description -->
 					<p class="mb-2"
 						style="color: var(--on-surface-variant); font-size: 13px;">
-						Summarize deliverables, ticket resolution, and daily achievements
-						for weekly supervisor compliance audit:</p>
+
+						Please provide the reason for your leave request:</p>
+
+
+					<!-- Display -->
+					<div id="leave-reason-display" class="summary-display p-3">
+
+						<span id="leave-reason-placeholder"> Reason for taking
+							leave </span>
+
+					</div>
+
+
+					<!-- Textarea -->
 					<textarea class="form-control summary-textarea p-3"
-						id="work-summary-textarea" rows="4">Completed sprint task #402: Refactored database connection pooling in Java Servlet filter. Investigated teacher registration edge-case bug and deployed patch to staging. Participated in daily standup and code review for auth modules.</textarea>
+						id="leave-reason-textarea" rows="4"
+						placeholder="Enter the reason for your leave..."
+						style="display: none;"></textarea>
+
+
+					<!-- Buttons -->
 					<div
 						class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 mt-3 pt-3"
 						style="border-top: 1px solid var(--surface-container);">
+
 						<div class="d-flex align-items-center gap-2"
 							style="color: var(--on-surface-variant); font-size: 12px;">
-							<span class="material-symbols-outlined" style="font-size: 16px;">tag</span>
-							<span>Tags: <strong style="color: var(--on-surface);">#Sprint-42</strong>,
-								<strong style="color: var(--on-surface);">#Backend</strong>, <strong
-								style="color: var(--on-surface);">#BugFix</strong></span>
+
+							<span class="material-symbols-outlined" style="font-size: 16px;">
+								info </span> <span>Leave requests are subject to approval.</span>
+
 						</div>
+
+
 						<div class="d-flex gap-2 align-self-end align-self-sm-auto">
+
+							<!-- Edit -->
 							<button
 								class="btn btn-chip d-inline-flex align-items-center gap-1"
-								id="edit-summary-btn" type="button" onclick="focusSummary()">
-								<span class="material-symbols-outlined fs-16">edit</span>Edit
-								Description
+								id="edit-leave-btn" type="button" onclick="focusLeaveReason()">
+
+								<span class="material-symbols-outlined fs-16"> edit </span>
+
 							</button>
+
+
+							<!-- Submit -->
 							<button
 								class="btn btn-primary-custom d-inline-flex align-items-center gap-1"
-								id="save-summary-btn" type="button" onclick="saveSummary()">
-								<span class="material-symbols-outlined fs-16">save</span>Save
-								Description
+								id="submit-leave-btn" type="button"
+								onclick="submitLeaveRequest()">
+
+								<span class="material-symbols-outlined fs-16"> send </span>
+
+								Submit Leave Request
+
 							</button>
+
 						</div>
+
 					</div>
+
 				</div>
 			</div>
 
@@ -578,5 +632,6 @@ BigDecimal totalHours = (BigDecimal) request.getAttribute("totalHours");
 		src="${pageContext.request.contextPath}/js/dashboard.js">
 		
 	</script>
+	<script src="${pageContext.request.contextPath}/js/auth.js"></script>
 </body>
 </html>

@@ -576,3 +576,65 @@ textarea.slot-textarea:focus {
 		left: 0;
 	}
 }
+
+.slot-textarea {
+	position: relative;
+	z-index: 9999;
+	pointer-events: auto !important;
+	cursor: text;
+	background: #ffffff !important;
+	color: #000000 !important;
+}
+
+.slot-card {
+	position: relative;
+	border: 1px solid #caddff;
+	border-radius: 2;
+}
+
+.slot-card form {
+	position: relative;
+	z-index: 5;
+}
+
+#slot-activity-input {
+	position: relative;
+	z-index: 9999 !important;
+	pointer-events: auto !important;
+	cursor: text !important;
+}
+
+/* FIX: Activity textarea not clickable */
+.app-main {
+	position: relative !important;
+	z-index: 100 !important;
+}
+
+.active-slot {
+	position: relative !important;
+	z-index: 200 !important;
+}
+
+.active-slot form {
+	position: relative !important;
+	z-index: 300 !important;
+}
+
+#slot-activity-input {
+	position: relative !important;
+	z-index: 99999 !important;
+	pointer-events: auto !important;
+	user-select: text !important;
+	cursor: text !important;
+	display: block !important;
+	background: #ffffff !important;
+	color: #000000 !important;
+}
+#submitRecord{
+	background: #007575;
+	color: white;
+}
+#submitRecord:hover {
+	background: #006262;
+	color: white;
+}

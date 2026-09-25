@@ -43,11 +43,20 @@
 			</button>
 			<div class="divider-v-lg d-none d-sm-block"></div>
 			<div class="d-flex align-items-center gap-2"></div>
-			<a class="icon-btn danger" aria-label="Sign Out" href="${pageContext.request.contextPath}/login.jsp"> <span
-				class="material-symbols-outlined fs-20">logout</span>
+			<a class="icon-btn danger" aria-label="Sign Out" href="${pageContext.request.contextPath}/login.jsp"> 
+			<a href="${pageContext.request.contextPath}/logout" onclick="return confirmLogout();"> 
+			<span class="material-symbols-outlined">logout</span> <span>Logout</span>
+			</a>
 			</a>
 		</div>
 	</header>
 </body>
+<script>
+	window.contextPath = "${pageContext.request.contextPath}";
+</script>
 
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/js/navbar.js">
+	
+</script>
 </html>

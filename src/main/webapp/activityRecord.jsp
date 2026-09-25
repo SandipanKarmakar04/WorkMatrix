@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +11,7 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
 <link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/weeklyTimeSheet.css">
+	href="${pageContext.request.contextPath}/css/activityRecord.css">
 
 <!-- Fonts + Material Symbols -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,6 +22,16 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
 	rel="stylesheet">
+<style>
+#slot-activity-input {
+	pointer-events: auto !important;
+	position: relative !important;
+	z-index: 99999 !important;
+	background: white !important;
+	color: black !important;
+}
+</style>
+
 </head>
 <body>
 	<jsp:include page="/navbar.jsp" />
@@ -28,54 +39,6 @@
 
 	<main class="app-main">
 
-		<!-- Header & date navigation -->
-		<div
-			class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 py-3">
-			<div>
-				<div class="breadcrumb-custom">
-					<span>WorkMatrix</span> <span class="material-symbols-outlined"
-						style="font-size: 12px;">chevron_right</span> <span>Daily
-						Logging</span>
-				</div>
-				<h1 class="fw-semibold mt-1 mb-1"
-					style="font-size: 24px; letter-spacing: -0.015em;">Activity</h1>
-				<p class="mb-0"
-					style="color: var(--on-surface-variant); font-size: 13px;">Track,
-					verify, and record operational deliverables across standard 2-hour
-					shift windows.</p>
-			</div>
-
-			<div class="d-flex flex-wrap align-items-center gap-2">
-				<div class="date-toolbar">
-					<button type="button" title="Previous working day">
-						<span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span>
-						<span class="d-none d-sm-inline">20 Sep</span>
-					</button>
-					<div class="date-today">
-						<span class="material-symbols-outlined"
-							style="font-size: 16px; color: var(--secondary);">calendar_today</span>
-						<span>Today: Mon, 21 Sep 2026</span> <span
-							class="material-symbols-outlined"
-							style="font-size: 16px; color: var(--on-surface-variant);">unfold_more</span>
-					</div>
-					<button type="button" disabled title="Future date inaccessible">
-						<span class="d-none d-sm-inline">22 Sep</span> <span
-							class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
-					</button>
-				</div>
-				<div class="d-flex align-items-center gap-2">
-					<button
-						class="btn btn-toolbar-soft d-inline-flex align-items-center gap-2"
-						type="button">
-						<span class="material-symbols-outlined fs-16">download</span> <span
-							class="d-none d-xl-inline">Export Summary (CSV)</span>
-					</button>
-					<button class="btn-icon-square" title="Print Log" type="button">
-						<span class="material-symbols-outlined fs-16">print</span>
-					</button>
-				</div>
-			</div>
-		</div>
 
 		<!-- KPI cards -->
 		<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 my-1">
@@ -176,7 +139,7 @@
 
 				<div class="d-flex align-items-center justify-content-between px-1">
 					<div class="d-flex align-items-center gap-2">
-						<span class="h6 mb-0">Daily Slot Schedule</span> <span
+						<span class="h6 mb-0">Submit Your Work</span> <span
 							style="background: var(--surface-container-high); color: var(--on-surface-variant); font-size: 11px; padding: 2px 10px; border-radius: 999px;">2-Hour
 							Policy Interval</span>
 					</div>
@@ -188,179 +151,352 @@
 					</div>
 				</div>
 
-				<!-- SLOT 1: Completed -->
+
+				<!-- ACTIVITY RECORDS FROM DATABASE -->
+
+				<%
+				java.util.List<model.ActivityRecord> activityRecords = (java.util.List<model.ActivityRecord>) request
+						.getAttribute("activityRecords");
+				%>
+
+
+				<!-- SLOT 1 -->
+
+				<%
+				boolean slot1Completed = false;
+				model.ActivityRecord slot1Record = null;
+
+				if (activityRecords != null) {
+					for (model.ActivityRecord record : activityRecords) {
+						if (record.getSlotNumber() == 1) {
+					slot1Completed = true;
+					slot1Record = record;
+					break;
+						}
+					}
+				}
+				%>
+
 				<div class="slot-card">
+
 					<div class="slot-header">
+
 						<div class="d-flex align-items-center gap-2">
+
 							<span class="slot-num">01</span>
+
 							<div class="d-flex flex-column">
-								<span class="h6 mb-0">09:00 AM – 11:00 AM</span> <span
-									style="color: var(--on-surface-variant); font-size: 11px;">Duration:
-									2h 00m • Morning Onset</span>
+
+								<span class="h6 mb-0"> 11:00 AM – 13:00 PM </span> <span
+									style="color: var(--on-surface-variant); font-size: 11px;">
+									Duration: 2h 00m </span>
+
 							</div>
+
 						</div>
-						<span class="status-pill status-completed"><span
-							class="material-symbols-outlined" style="font-size: 12px;">check_circle</span>Completed</span>
+
+						<span
+							class="status-pill <%=slot1Completed ? "status-completed" : "status-current"%>">
+
+							<%
+							if (slot1Completed) {
+							%> <span class="material-symbols-outlined"
+							style="font-size: 12px;"> check_circle </span> Completed <%
+ } else {
+ %> Available <%
+ }
+ %>
+
+						</span>
+
 					</div>
-					<p class="mb-2" style="line-height: 1.6;">Worked on employee
-						dashboard and fixed attendance API integration. Refactored
-						password encryption hashing logic and handled database connection
-						pooling exceptions for MySQL connector.</p>
+
+
+					<%
+					if (slot1Completed) {
+					%>
+
+					<p class="mb-2" style="line-height: 1.6;">
+						<%=slot1Record.getWorkDescription()%>
+					</p>
+
 					<div class="d-flex flex-wrap gap-2 mb-2">
-						<span class="tag-pill">#Dashboard</span> <span class="tag-pill">#API-Integration</span>
-						<span class="tag-pill">#BugFix</span>
-					</div>
-					<div
-						class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 pt-2"
-						style="border-top: 1px solid var(--surface-container);">
-						<div class="slot-footer-note">
-							<span class="material-symbols-outlined" style="font-size: 14px;">schedule_send</span>
-							<span>Submitted at 11:05 AM via Web Portal</span>
-						</div>
-						<button class="btn-linklike" type="button">
-							<span class="material-symbols-outlined fs-16">edit_note</span>View
-							/ Edit Entry
-						</button>
-					</div>
-				</div>
 
-				<!-- SLOT 2: Completed -->
-				<div class="slot-card">
-					<div class="slot-header">
-						<div class="d-flex align-items-center gap-2">
-							<span class="slot-num">02</span>
-							<div class="d-flex flex-column">
-								<span class="h6 mb-0">11:00 AM – 01:00 PM</span> <span
-									style="color: var(--on-surface-variant); font-size: 11px;">Duration:
-									2h 00m • Midday Sprint</span>
-							</div>
-						</div>
-						<span class="status-pill status-completed"><span
-							class="material-symbols-outlined" style="font-size: 12px;">check_circle</span>Completed</span>
-					</div>
-					<p class="mb-2" style="line-height: 1.6;">Implemented check-in
-						and check-out functionality. Created modular JSP includes for top
-						navigation bar and responsive sidebar with active route states.
-						Tested biometric device payload ingestion mock.</p>
-					<div class="d-flex flex-wrap gap-2 mb-2">
-						<span class="tag-pill">#CheckIn</span> <span class="tag-pill">#Auth</span>
-						<span class="tag-pill">#JSP</span>
-					</div>
-					<div
-						class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 pt-2"
-						style="border-top: 1px solid var(--surface-container);">
-						<div class="slot-footer-note">
-							<span class="material-symbols-outlined" style="font-size: 14px;">schedule_send</span>
-							<span>Submitted at 01:02 PM via Web Portal</span>
-						</div>
-						<button class="btn-linklike" type="button">
-							<span class="material-symbols-outlined fs-16">edit_note</span>View
-							/ Edit Entry
-						</button>
-					</div>
-				</div>
+						<span class="tag-pill"> #<%=slot1Record.getCategory()%>
+						</span>
 
-				<!-- SLOT 3: ACTIVE / CURRENT -->
-				<div class="slot-card active-slot">
-					<div class="slot-header emphasized">
-						<div class="d-flex align-items-center gap-2">
-							<span class="slot-num current">03</span>
-							<div class="d-flex flex-column">
-								<span class="h6 mb-0 fw-bold">01:00 PM – 03:00 PM</span> <span
-									class="fw-semibold"
-									style="color: var(--primary); font-size: 11px;">Duration:
-									2h 00m • Slot Closes in 45 Minutes</span>
-							</div>
-						</div>
-						<span class="status-pill status-current"><span
-							style="width: 8px; height: 8px; border-radius: 50%; background: var(--secondary-container); display: inline-block;"></span>Current
-							Window (Action Required)</span>
 					</div>
 
-					<form class="d-flex flex-column gap-3">
-						<div>
-							<div
-								class="d-flex align-items-center justify-content-between mb-2">
-								<label class="fw-semibold d-flex align-items-center gap-1"
-									for="slot-activity-input" style="font-size: 14px;">
-									What did you work on during this time? <span
-									style="color: var(--error);">*</span>
-								</label> <span
-									style="color: var(--on-surface-variant); font-size: 11px; font-variant-numeric: tabular-nums;"
-									id="char-counter">142 / 500 characters</span>
-							</div>
-							<textarea class="form-control slot-textarea p-3"
-								id="slot-activity-input" rows="4"
-								placeholder="What did you work on during this time? Describe deliverables, tickets resolved, or commits...">Integrating JDBC query handlers for activity_log table and creating prepared statements for batch insertion of 2-hour slot records...</textarea>
-						</div>
+					<div class="slot-footer-note">
+						<span class="material-symbols-outlined" style="font-size: 14px;">
+							schedule_send </span> Submitted at
+						<%=slot1Record.getSubmittedAt()%>
+					</div>
 
-						<div>
-							<span
-								style="color: var(--on-surface-variant); font-size: 11px; text-transform: uppercase; letter-spacing: .04em;">Categorization
-								Tags</span>
-							<div class="d-flex flex-wrap gap-2 mt-2">
-								<button
-									class="tag-btn selected d-inline-flex align-items-center gap-1"
-									type="button">
-									<span class="material-symbols-outlined"
-										style="font-size: 12px;">check</span> Development
-								</button>
-								<button class="tag-btn unselected" type="button">+ Bug
-									Fixing</button>
-								<button class="tag-btn unselected" type="button">+
-									Meeting / Review</button>
-								<button class="tag-btn unselected" type="button">+ Code
-									Review</button>
-							</div>
-						</div>
+					<%
+					} else {
+					%>
+
+					<form action="${pageContext.request.contextPath}/submitActivity"
+						method="post" class="d-flex flex-column gap-3">
+
+						<input type="hidden" name="slotNumber" value="1"> <input
+							type="hidden" name="startTime" value="11:00"> <input
+							type="hidden" name="endTime" value="13:00"> <input
+							type="hidden" name="category" value="Development">
+
+						<textarea name="workDescription"
+							class="form-control slot-textarea p-3" rows="4" maxlength="500"
+							required placeholder="What did you work on during this time?"></textarea>
 
 						<div class="slot-action-bar">
-							<div class="d-flex align-items-center gap-2"
-								style="color: var(--secondary); font-size: 12px;">
-								<span class="material-symbols-outlined fs-16">verified</span> <span>Minimum
-									20 characters satisfied (Draft Auto-saved)</span>
-							</div>
-							<div class="d-flex gap-2">
-								<button class="btn btn-save-draft" type="button">Save
-									Draft</button>
-								<button
-									class="btn btn-submit-activity d-inline-flex align-items-center gap-2"
-									type="submit">
-									<span class="material-symbols-outlined fs-16">send</span>Submit
-									Activity
-								</button>
-							</div>
+
+							<button type="submit" class="btn btn-submit-activity"
+								id="submitRecord">
+
+								<span class="material-symbols-outlined fs-16"> send </span>
+
+								Submit Activity
+
+							</button>
+
 						</div>
+
 					</form>
+
+					<%
+					}
+					%>
+
 				</div>
 
-				<!-- SLOT 4: Upcoming / Locked -->
-				<div class="slot-card locked-slot">
+
+				<!-- SLOT 2 -->
+
+				<%
+				boolean slot2Completed = false;
+				model.ActivityRecord slot2Record = null;
+
+				if (activityRecords != null) {
+					for (model.ActivityRecord record : activityRecords) {
+						if (record.getSlotNumber() == 2) {
+					slot2Completed = true;
+					slot2Record = record;
+					break;
+						}
+					}
+				}
+				%>
+
+				<div class="slot-card">
+
 					<div class="slot-header">
+
 						<div class="d-flex align-items-center gap-2">
-							<span class="slot-num locked">04</span>
+
+							<span class="slot-num">02</span>
+
 							<div class="d-flex flex-column">
-								<span class="h6 mb-0">03:00 PM – 05:00 PM</span> <span
-									style="color: var(--on-surface-variant); font-size: 11px;">Duration:
-									2h 00m • Shift Wrap-up</span>
+
+								<span class="h6 mb-0"> 14:00 PM – 16:00 PM </span> <span
+									style="color: var(--on-surface-variant); font-size: 11px;">
+									Duration: 2h 00m </span>
+
 							</div>
+
 						</div>
-						<span class="status-pill status-locked"><span
-							class="material-symbols-outlined" style="font-size: 12px;">lock</span>Upcoming
-							• Locked</span>
+
+						<span
+							class="status-pill <%=slot2Completed ? "status-completed" : "status-current"%>">
+
+							<%
+							if (slot2Completed) {
+							%> <span class="material-symbols-outlined"
+							style="font-size: 12px;"> check_circle </span> Completed <%
+ } else {
+ %> Available <%
+ }
+ %>
+
+						</span>
+
 					</div>
-					<div class="locked-note">
-						<div class="d-flex align-items-center gap-2"
-							style="color: var(--on-surface-variant); font-size: 13px;">
-							<span class="material-symbols-outlined"
-								style="color: var(--outline);">info</span> <span>Available
-								at 03:00 PM. Future time slots unlock automatically during
-								standard shift hours.</span>
+
+
+					<%
+					if (slot2Completed) {
+					%>
+
+					<p class="mb-2" style="line-height: 1.6;">
+						<%=slot2Record.getWorkDescription()%>
+					</p>
+
+					<div class="d-flex flex-wrap gap-2 mb-2">
+
+						<span class="tag-pill"> #<%=slot2Record.getCategory()%>
+						</span>
+
+					</div>
+
+					<div class="slot-footer-note">
+
+						<span class="material-symbols-outlined" style="font-size: 14px;">
+							schedule_send </span> Submitted at
+						<%=slot2Record.getSubmittedAt()%>
+
+					</div>
+
+					<%
+					} else {
+					%>
+
+					<form action="${pageContext.request.contextPath}/submitActivity"
+						method="post" class="d-flex flex-column gap-3">
+
+						<input type="hidden" name="slotNumber" value="2"> <input
+							type="hidden" name="startTime" value="14:00"> <input
+							type="hidden" name="endTime" value="16:00"> <input
+							type="hidden" name="category" value="Development">
+
+						<textarea name="workDescription"
+							class="form-control slot-textarea p-3" rows="4" maxlength="500"
+							required placeholder="What did you work on during this time?"></textarea>
+
+						<div class="slot-action-bar">
+
+							<button type="submit" class="btn btn-submit-activity"
+								id="submitRecord">
+
+								<span class="material-symbols-outlined fs-16"> send </span>
+
+								Submit Activity
+
+							</button>
+
 						</div>
-						<button class="btn-locked" disabled type="button">Slot
-							Locked until 03:00 PM</button>
-					</div>
+
+					</form>
+
+					<%
+					}
+					%>
+
 				</div>
+
+
+				<!-- SLOT 3 -->
+
+				<%
+				boolean slot3Completed = false;
+				model.ActivityRecord slot3Record = null;
+
+				if (activityRecords != null) {
+					for (model.ActivityRecord record : activityRecords) {
+						if (record.getSlotNumber() == 3) {
+					slot3Completed = true;
+					slot3Record = record;
+					break;
+						}
+					}
+				}
+				%>
+
+				<div class="slot-card">
+
+					<div class="slot-header">
+
+						<div class="d-flex align-items-center gap-2">
+
+							<span class="slot-num">03</span>
+
+							<div class="d-flex flex-column">
+
+								<span class="h6 mb-0"> 16:00 PM – 18:00 PM </span> <span
+									style="color: var(--on-surface-variant); font-size: 11px;">
+									Duration: 2h 00m </span>
+
+							</div>
+
+						</div>
+
+						<span
+							class="status-pill <%=slot3Completed ? "status-completed" : "status-current"%>">
+
+							<%
+							if (slot3Completed) {
+							%> <span class="material-symbols-outlined"
+							style="font-size: 12px;"> check_circle </span> Completed <%
+ } else {
+ %> Available <%
+ }
+ %>
+
+						</span>
+
+					</div>
+
+
+					<%
+					if (slot3Completed) {
+					%>
+
+					<p class="mb-2" style="line-height: 1.6;">
+						<%=slot3Record.getWorkDescription()%>
+					</p>
+
+					<div class="d-flex flex-wrap gap-2 mb-2">
+
+						<span class="tag-pill"> #<%=slot3Record.getCategory()%>
+						</span>
+
+					</div>
+
+					<div class="slot-footer-note">
+
+						<span class="material-symbols-outlined" style="font-size: 14px;">
+							schedule_send </span> Submitted at
+						<%=slot3Record.getSubmittedAt()%>
+
+					</div>
+
+					<%
+					} else {
+					%>
+
+					<form action="${pageContext.request.contextPath}/submitActivity"
+						method="post" class="d-flex flex-column gap-3">
+
+						<input type="hidden" name="slotNumber" value="3"> <input
+							type="hidden" name="startTime" value="16:00"> <input
+							type="hidden" name="endTime" value="18:00"> <input
+							type="hidden" name="category" value="Development">
+
+						<textarea name="workDescription"
+							class="form-control slot-textarea p-3" rows="4" maxlength="500"
+							required placeholder="What did you work on during this time?"></textarea>
+
+						<div class="slot-action-bar">
+
+							<button type="submit" class="btn btn-submit-activity"
+								id="submitRecord">
+
+								<span class="material-symbols-outlined fs-16"> send </span>
+
+								Submit Activity
+
+							</button>
+
+						</div>
+
+					</form>
+
+					<%
+					}
+					%>
+
+				</div>
+
+
 
 				<!-- Empty state demo box -->
 				<div class="empty-state-box">
@@ -460,45 +596,9 @@
 					</div>
 				</div>
 
-				<!-- Reviewer -->
-				<div class="card-surface p-3 reviewer-card">
-					<span
-						style="color: var(--on-surface-variant); font-size: 11px; text-transform: uppercase; letter-spacing: .04em;">Designated
-						Reviewer</span>
-					<div class="d-flex align-items-center gap-2 mt-2 mb-3">
-						<img class="reviewer-avatar" alt="Evelyn Vance"
-							src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTSZTiCSmOtZuixElnSf_Uua6RGyUjcKSfMSQ5ruKxmaHzNHdvORxVrDodm3OutPEaoN_NT-9KLm7uvq53mlTDTfTelBSLlY2taIsaIW_i8R-MGc1U9pWlm1gMEvRo9AivhdIzYS5vsbn39TW07psTeylERhWXguclgXx7Hlo-H1yOWm0C4wcrh8O-j87hPteQRsTFoylkFDxZv6-22s55vW03o6Rtd92o2oU08IoY2-vVM-Gly1WOmg">
-						<div class="d-flex flex-column">
-							<span class="fw-semibold" style="font-size: 13px;">Evelyn
-								Vance</span> <span
-								style="color: var(--on-surface-variant); font-size: 12px;">Lead
-								Architect • Platform Eng</span>
-						</div>
-					</div>
-					<div class="reviewer-footer">
-						<span>Auto-digest dispatch:</span> <span class="fw-medium"
-							style="color: var(--on-surface); font-variant-numeric: tabular-nums;">17:00
-							PM</span>
-					</div>
-				</div>
 
-				<!-- Tips -->
-				<div class="tips-card">
-					<div class="d-flex align-items-start gap-2">
-						<span class="material-symbols-outlined"
-							style="color: var(--secondary-container);">electric_bolt</span>
-						<div>
-							<h2 class="h6 mb-1" style="color: var(--on-primary);">Keyboard
-								Shortcuts</h2>
-							<p class="mb-0" style="font-size: 13px; color: #cce5ff;">
-								Press
-								<kbd>Ctrl + Enter</kbd>
-								to submit your current active slot directly without reaching for
-								the mouse.
-							</p>
-						</div>
-					</div>
-				</div>
+
+
 			</div>
 		</div>
 
@@ -515,6 +615,7 @@ keyframes ping { 75%, 100% {
 	opacity: 0;
 }
 }
+<script src="${pageContext.request.contextPath}/js/auth.js"></script>
 </style>
 </body>
 </html>

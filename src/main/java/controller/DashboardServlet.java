@@ -16,26 +16,6 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
 
-//    @Override
-//    protected void doGet(HttpServletRequest request,
-//                          HttpServletResponse response)
-//            throws ServletException, IOException {
-//
-//        HttpSession session = request.getSession(false);
-//
-//        if (session == null ||
-//            session.getAttribute("employeeId") == null) {
-//
-//            response.sendRedirect(
-//                request.getContextPath() + "/login.jsp"
-//            );
-//            return;
-//        }
-//
-//        request.getRequestDispatcher("/dashboard.jsp")
-//               .forward(request, response);
-//    }
-
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -53,40 +33,75 @@ public class DashboardServlet extends HttpServlet {
 
 		String employeeId = session.getAttribute("employeeId").toString();
 
-		String sql = "SELECT check_in, check_out, total_hours, status " + "FROM attendance " + "WHERE employee_id = ? "
-				+ "AND attendance_date = CURDATE()";
+		try (Connection con = DBConnection.getConnection()) {
 
-		try (Connection con = DBConnection.getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+			// ==========================================
+			// 1. LOAD TODAY'S ATTENDANCE
+			// ==========================================
 
-			stmt.setString(1, employeeId);
+			String attendanceSql = "SELECT check_in, check_out, total_hours, status " + "FROM attendance "
+					+ "WHERE employee_id = ? " + "AND attendance_date = CURDATE()";
 
-			try (ResultSet rs = stmt.executeQuery()) {
+			try (PreparedStatement stmt = con.prepareStatement(attendanceSql)) {
 
-				if (rs.next()) {
+				stmt.setString(1, employeeId);
 
-					System.out.println("Employee ID: " + employeeId);
-					System.out.println("Check In: " + rs.getTime("check_in"));
-					System.out.println("Check Out: " + rs.getTime("check_out"));
-					System.out.println("Total Hours: " + rs.getBigDecimal("total_hours"));
+				try (ResultSet rs = stmt.executeQuery()) {
 
-					// Put today's attendance in request
-					request.setAttribute("checkIn", rs.getTime("check_in"));
+					if (rs.next()) {
 
-					request.setAttribute("checkOut", rs.getTime("check_out"));
+						request.setAttribute("checkIn", rs.getTime("check_in"));
 
-					request.setAttribute("totalHours", rs.getBigDecimal("total_hours"));
+						request.setAttribute("checkOut", rs.getTime("check_out"));
 
-					request.setAttribute("attendanceStatus", rs.getString("status"));
+						request.setAttribute("totalHours", rs.getBigDecimal("total_hours"));
 
-				} else {
+						request.setAttribute("attendanceStatus", rs.getString("status"));
 
-					// No attendance record today
-					request.setAttribute("checkIn", null);
-					request.setAttribute("checkOut", null);
-					request.setAttribute("totalHours", null);
-					request.setAttribute("attendanceStatus", null);
+					} else {
+
+						request.setAttribute("checkIn", null);
+						request.setAttribute("checkOut", null);
+						request.setAttribute("totalHours", null);
+						request.setAttribute("attendanceStatus", null);
+					}
 				}
 			}
+
+			// ==========================================
+			// 2. LOAD TODAY'S WORK DESCRIPTION
+			// ==========================================
+
+			String workSql = "SELECT work_description, updated_at " + "FROM daily_work " + "WHERE employee_id = ? "
+					+ "AND work_date = CURDATE()";
+
+			try (PreparedStatement workStmt = con.prepareStatement(workSql)) {
+
+				workStmt.setString(1, employeeId);
+
+				try (ResultSet workRs = workStmt.executeQuery()) {
+
+					if (workRs.next()) {
+
+					    request.setAttribute(
+					            "workDescription",
+					            workRs.getString("work_description"));
+
+					    request.setAttribute(
+					            "workUpdatedAt",
+					            workRs.getTimestamp("updated_at"));
+
+					} else {
+
+					    request.setAttribute("workDescription", null);
+					    request.setAttribute("workUpdatedAt", null);
+					}
+				}
+			}
+
+			// ==========================================
+			// 3. OPEN DASHBOARD
+			// ==========================================
 
 			request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
 
@@ -97,5 +112,4 @@ public class DashboardServlet extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Unable to load dashboard.");
 		}
 	}
-
 }
