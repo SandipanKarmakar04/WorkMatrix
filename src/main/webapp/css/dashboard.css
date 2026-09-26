@@ -78,6 +78,34 @@ a {
 }
 
 /* Greeting header */
+/* ==============================
+   Profile Avatar
+   ============================== */
+.profile-avatar {
+	width: 48px;
+	height: 48px;
+	min-width: 48px;
+	min-height: 48px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	color: #fff;
+	font-size: 16px;
+	font-weight: 700;
+	letter-spacing: 0.3px;
+	border: 2px solid #fff;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	user-select: none;
+}
+
+/* Subtle hover effect */
+.profile-avatar:hover {
+	transform: scale(1.06);
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.14), 0 8px 20px
+		rgba(0, 0, 0, 0.14);
+}
+
 .avatar-status-dot {
 	position: absolute;
 	bottom: 0;
@@ -173,11 +201,26 @@ keyframes pulse { 0%, 100% {
 }
 
 50
+
+
+
+
 %
 {
 opacity
+
+
+
+
 :
-.4;
+
+
+
+
+.4
+
+
+;
 }
 }
 .status-present {
@@ -226,6 +269,7 @@ opacity
 	border: none;
 	font-weight: 600;
 }
+
 #checkin-btn:hover {
 	background: var(--primary);
 	color: var(--on-primary);
@@ -237,6 +281,7 @@ opacity
 	border: none;
 	font-weight: 600;
 }
+
 #checkout-btn:hover {
 	background: var(--primary);
 	color: var(--on-primary);

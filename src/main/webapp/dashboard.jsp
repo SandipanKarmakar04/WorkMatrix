@@ -7,11 +7,10 @@
 <%
 HttpSession currentSession = request.getSession(false);
 
-if (currentSession == null ||
-    currentSession.getAttribute("employeeId") == null) {
+if (currentSession == null || currentSession.getAttribute("employeeId") == null) {
 
-    response.sendRedirect(request.getContextPath() + "/login");
-    return;
+	response.sendRedirect(request.getContextPath() + "/login");
+	return;
 }
 
 Time checkIn = (Time) request.getAttribute("checkIn");
@@ -47,11 +46,45 @@ java.sql.Timestamp workUpdatedAt = (java.sql.Timestamp) request.getAttribute("wo
 			class="card-surface p-4 mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
 			<div class="d-flex align-items-center gap-3">
 				<div class="position-relative">
-					<img class="rounded-circle"
-						style="width: 56px; height: 56px; object-fit: cover; box-shadow: 0 1px 2px rgba(0, 0, 0, .1); border: 2px solid var(--primary-fixed);"
-						alt="Employee Photo"
-						src="${pageContext.request.contextPath}/assets/avatar.jpg">
-					<span class="avatar-status-dot" title="Active on Network"></span>
+
+					<%
+					String employeeName = (String) session.getAttribute("employeeName");
+					String initials = "";
+					String avatarColor = "#5E35B1"; // default color
+
+					if (employeeName != null && !employeeName.trim().isEmpty()) {
+
+						String[] nameParts = employeeName.trim().split("\\s+");
+
+						if (nameParts.length == 1) {
+							initials = nameParts[0].substring(0, 1).toUpperCase();
+						} else {
+							initials = (nameParts[0].substring(0, 1) + nameParts[nameParts.length - 1].substring(0, 1)).toUpperCase();
+						}
+
+						// Generate a consistent color based on employee name
+						String[] avatarColors = {"#E53935", // Red
+						"#D81B60", // Pink
+						"#8E24AA", // Purple
+						"#5E35B1", // Deep Purple
+						"#3949AB", // Indigo
+						"#1E88E5", // Blue
+						"#039BE5", // Light Blue
+						"#00897B", // Teal
+						"#43A047", // Green
+						"#7CB342", // Light Green
+						"#F4511E", // Orange
+						"#6D4C41" // Brown
+						};
+
+						int colorIndex = Math.abs(employeeName.hashCode()) % avatarColors.length;
+						avatarColor = avatarColors[colorIndex];
+					}
+					%>
+
+					<span class="profile-avatar"
+						style="background-color: <%=avatarColor%>;"> <%=initials%>
+					</span>
 				</div>
 				<div>
 					<div class="d-flex align-items-center gap-2 flex-wrap">
