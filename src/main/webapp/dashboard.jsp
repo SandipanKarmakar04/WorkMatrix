@@ -89,7 +89,7 @@ java.sql.Timestamp workUpdatedAt = (java.sql.Timestamp) request.getAttribute("wo
 				<div>
 					<div class="d-flex align-items-center gap-2 flex-wrap">
 						<h1 class="h4 fw-semibold mb-0" id="greetName">${sessionScope.employeeName}</h1>
-						<span class="badge-emp" id="dashId">${sessionScope.employeeId}</span>
+						<span class="badge-emp" id="dashId">EMP-${sessionScope.employeeId}</span>
 					</div>
 					<div class="d-flex align-items-center gap-2 mt-1 flex-wrap"
 						style="color: var(--on-surface-variant);">
@@ -321,101 +321,7 @@ java.sql.Timestamp workUpdatedAt = (java.sql.Timestamp) request.getAttribute("wo
 				</div>
 
 				<!-- Today's Work Summary -->
-				<div class="card-surface p-4">
-
-					<!-- Header -->
-					<div
-						class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 pb-3 mb-3"
-						style="border-bottom: 1px solid var(--surface-container);">
-
-						<div class="d-flex align-items-center gap-2">
-
-							<span class="material-symbols-outlined fs-22"
-								style="color: var(--primary);"> event_busy </span>
-
-							<h2 class="h6 mb-0">Leave Request</h2>
-
-						</div>
-
-						<span class="d-flex align-items-center gap-1"
-							id="leave-status-tag"
-							style="color: var(--on-surface-variant); font-size: 12px;">
-
-							<span class="material-symbols-outlined"
-							style="font-size: 16px; color: #059669;"> info </span> Submit a
-							leave request
-
-						</span>
-
-					</div>
-
-
-					<!-- Description -->
-					<p class="mb-2"
-						style="color: var(--on-surface-variant); font-size: 13px;">
-
-						Please provide the reason for your leave request:</p>
-
-
-					<!-- Display -->
-					<div id="leave-reason-display" class="summary-display p-3">
-
-						<span id="leave-reason-placeholder"> Reason for taking
-							leave </span>
-
-					</div>
-
-
-					<!-- Textarea -->
-					<textarea class="form-control summary-textarea p-3"
-						id="leave-reason-textarea" rows="4"
-						placeholder="Enter the reason for your leave..."
-						style="display: none;"></textarea>
-
-
-					<!-- Buttons -->
-					<div
-						class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 mt-3 pt-3"
-						style="border-top: 1px solid var(--surface-container);">
-
-						<div class="d-flex align-items-center gap-2"
-							style="color: var(--on-surface-variant); font-size: 12px;">
-
-							<span class="material-symbols-outlined" style="font-size: 16px;">
-								info </span> <span>Leave requests are subject to approval.</span>
-
-						</div>
-
-
-						<div class="d-flex gap-2 align-self-end align-self-sm-auto">
-
-							<!-- Edit -->
-							<button
-								class="btn btn-chip d-inline-flex align-items-center gap-1"
-								id="edit-leave-btn" type="button" onclick="focusLeaveReason()">
-
-								<span class="material-symbols-outlined fs-16"> edit </span>
-
-							</button>
-
-
-							<!-- Submit -->
-							<button
-								class="btn btn-primary-custom d-inline-flex align-items-center gap-1"
-								id="submit-leave-btn" type="button"
-								onclick="submitLeaveRequest()">
-
-								<span class="material-symbols-outlined fs-16"> send </span>
-
-								Submit Leave Request
-
-							</button>
-
-						</div>
-
-					</div>
-
-				</div>
+				<div class="card-surface p-4"></div>
 			</div>
 
 			<!-- Right column -->
@@ -496,13 +402,6 @@ java.sql.Timestamp workUpdatedAt = (java.sql.Timestamp) request.getAttribute("wo
 
 					<!-- Daily breakdown -->
 					<div class="d-flex flex-column gap-3">
-						<div class="d-flex align-items-center justify-content-between">
-							<span class="fw-semibold" style="font-size: 13px;">Daily
-								Hours Breakdown</span> <span
-								style="color: var(--on-surface-variant); font-size: 12px;">Avg:
-								8.75 hrs/day</span>
-						</div>
-
 						<div class="d-flex flex-column gap-1">
 							<div class="d-flex justify-content-between"
 								style="font-size: 12px;">
@@ -576,84 +475,10 @@ java.sql.Timestamp workUpdatedAt = (java.sql.Timestamp) request.getAttribute("wo
 						</div>
 					</div>
 
-					<!-- Weekly total -->
-					<div class="mt-4 pt-3"
-						style="border-top: 1px solid var(--surface-container);">
-						<div
-							class="d-flex justify-content-between align-items-center mb-2">
-							<span style="color: var(--on-surface-variant); font-size: 12px;">Weekly
-								Goal Progress</span> <span class="fw-bold"
-								style="color: var(--primary); font-size: 13px;">109%
-								Completed</span>
-						</div>
-						<div class="weekly-total-bar">
-							<div style="width: 100%; background: var(--primary);"></div>
-							<div style="width: 9%; background: var(--secondary-container);"></div>
-						</div>
-					</div>
+
 				</div>
 
-				<!-- Quick shortcuts -->
-				<div class="card-surface p-4">
-					<h3 class="h6 d-flex align-items-center gap-2 mb-3">
-						<span class="material-symbols-outlined fs-20"
-							style="color: var(--secondary);">bolt</span> Quick Navigation
-						&amp; Actions
-					</h3>
-					<div class="row row-cols-1 row-cols-sm-2 g-2 mb-3">
-						<div class="col">
-							<a class="shortcut-link" href="#"> <span
-								class="shortcut-icon" style="color: var(--primary);"><span
-									class="material-symbols-outlined fs-20">date_range</span></span>
-								<div class="d-flex flex-column overflow-hidden">
-									<span class="fw-semibold text-truncate">View Full
-										Timesheet</span> <span class="text-truncate"
-										style="color: var(--on-surface-variant); font-size: 12px;">Full
-										7-day breakdown</span>
-								</div>
-							</a>
-						</div>
-						<div class="col">
-							<a class="shortcut-link" href="#"> <span
-								class="shortcut-icon" style="color: var(--secondary);"><span
-									class="material-symbols-outlined fs-20">receipt_long</span></span>
-								<div class="d-flex flex-column overflow-hidden">
-									<span class="fw-semibold text-truncate">Work History</span> <span
-										class="text-truncate"
-										style="color: var(--on-surface-variant); font-size: 12px;">Past
-										audit logs &amp; slips</span>
-								</div>
-							</a>
-						</div>
-					</div>
 
-					<div class="audit-note">
-						<span class="material-symbols-outlined fs-20 mt-1"
-							style="color: var(--secondary);">verified_user</span>
-						<div style="color: var(--on-surface-variant);">
-							<p class="fw-semibold mb-1"
-								style="color: var(--on-surface); font-size: 12px;">Overtime
-								Approval Pending</p>
-							<p class="mb-0" style="font-size: 13px;">3h 45m overtime
-								logged this week will auto-route to Arthur Pendelton on Friday
-								23:59 for payroll cut-off.</p>
-						</div>
-					</div>
-
-					<div
-						class="d-flex align-items-center justify-content-between pt-3 mt-3"
-						style="border-top: 1px solid var(--surface-container);">
-						<span style="color: var(--on-surface-variant); font-size: 13px;">Need
-							shift adjustments?</span>
-						<button
-							class="btn btn-link p-0 fw-semibold d-inline-flex align-items-center gap-1"
-							style="color: var(--primary); text-decoration: none;"
-							type="button" onclick="openLeaveModal()">
-							<span>Submit Leave / Correction</span> <span
-								class="material-symbols-outlined fs-16">arrow_forward</span>
-						</button>
-					</div>
-				</div>
 			</div>
 		</div>
 	</main>

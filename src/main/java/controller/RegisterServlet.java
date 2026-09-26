@@ -3,7 +3,7 @@ package controller;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-
+import org.mindrot.jbcrypt.BCrypt;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,7 +23,10 @@ public class RegisterServlet extends HttpServlet {
 		String email = request.getParameter("corporateEmail");
 		String designation = request.getParameter("designation");
 		String employeeId = request.getParameter("employeeId");
+		
 		String password = request.getParameter("password");
+		String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
+		
 		String confirmPassword = request.getParameter("confirmPassword");
 
 		// Check passwords
@@ -43,7 +46,7 @@ public class RegisterServlet extends HttpServlet {
 			ps.setString(3, email);
 			ps.setString(4, designation);
 			ps.setString(5, employeeId);
-			ps.setString(6, password);
+			ps.setString(6, hashedPassword);
 
 			int result = ps.executeUpdate();
 

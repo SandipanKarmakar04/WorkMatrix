@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+import org.mindrot.jbcrypt.BCrypt;
 import dao.DBConnection;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,82 +16,69 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    // Open login page
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+	// Open login page
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        response.sendRedirect(request.getContextPath() + "/login.jsp");
-    }
+		response.sendRedirect(request.getContextPath() + "/login.jsp");
+	}
 
-    // Process login form
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+	// Process login form
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        String employeeId = request.getParameter("employeeId");
-        String password = request.getParameter("password");
+		String employeeId = request.getParameter("employeeId");
+		String password = request.getParameter("password");
 
-        String sql = "SELECT first_name, last_name, designation, employee_id "
-                   + "FROM employees "
-                   + "WHERE employee_id = ? AND password = ?";
+		String sql = "SELECT first_name, last_name, designation, employee_id, password " + "FROM employees "
+				+ "WHERE employee_id = ?";
 
-        try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+		try (Connection con = DBConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, employeeId);
-            ps.setString(2, password);
+			ps.setString(1, employeeId);
 
-            ResultSet rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
+			if (rs.next() && BCrypt.checkpw(password, rs.getString("password"))) {
 
-                // Create session
-                HttpSession session = request.getSession();
+				// Create session
+				HttpSession session = request.getSession();
 
-                // Prevent session fixation
-                request.changeSessionId();
+				// Prevent session fixation
+				request.changeSessionId();
 
-                // Store authenticated employee information
-                session.setAttribute("employeeId",
-                        rs.getString("employee_id"));
+				// Store authenticated employee information
+				session.setAttribute("employeeId", rs.getString("employee_id"));
 
-                session.setAttribute("firstName",
-                        rs.getString("first_name"));
+				session.setAttribute("firstName", rs.getString("first_name"));
 
-                session.setAttribute("lastName",
-                        rs.getString("last_name"));
+				session.setAttribute("lastName", rs.getString("last_name"));
 
-                session.setAttribute("employeeName",
-                        rs.getString("first_name") + " "
-                        + rs.getString("last_name"));
+				session.setAttribute("employeeName", rs.getString("first_name") + " " + rs.getString("last_name"));
 
-                session.setAttribute("designation",
-                        rs.getString("designation"));
+				session.setAttribute("designation", rs.getString("designation"));
 
-                // Go to DashboardServlet
-                response.sendRedirect(request.getContextPath() + "/dashboard");
+				// Go to DashboardServlet
+				response.sendRedirect(request.getContextPath() + "/dashboard");
 
-            } else {
+			} else {
 
-                request.setAttribute("error",
-                        "Invalid Employee ID or Password.");
+				request.setAttribute("error", "Invalid Employee ID or Password.");
 
-                request.getRequestDispatcher("/login.jsp")
-                       .forward(request, response);
-            }
+				request.getRequestDispatcher("/login.jsp").forward(request, response);
+			}
 
-        } catch (Exception e) {
+		} catch (Exception e) {
 
-            e.printStackTrace();
+			e.printStackTrace();
 
-            request.setAttribute("error",
-                    "Unable to process login.");
+			request.setAttribute("error", "Unable to process login.");
 
-            request.getRequestDispatcher("/login.jsp")
-                   .forward(request, response);
-        }
-    }
+			request.getRequestDispatcher("/login.jsp").forward(request, response);
+		}
+	}
 }
